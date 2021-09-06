@@ -11,7 +11,7 @@ class ViewController: UIViewController {
     // 乱数表示ラベル
     @IBOutlet private weak var randomNumberLabel: UILabel!
     // 乱数の変数（ラベルをデータの置き場にしない）
-    private var randomNumber: Int!
+    private var randomNumber: Int = 0
     // スライダー
     @IBOutlet private weak var numberSlider: UISlider!
 
@@ -41,10 +41,18 @@ class ViewController: UIViewController {
     private func showAlert(result: String, value: Int) {
 
         let message = result + "\nあなたの値： \(value)"
-        let alert = UIAlertController(title: "結果", message: message, preferredStyle: .alert)
+        let alert = UIAlertController(
+            title: "結果",
+            message: message,
+            preferredStyle: .alert
+        )
 
         // 再挑戦ボタンを押下したら乱数を発生させる
-        let retryAlert = UIAlertAction(title: "再挑戦", style: .default, handler: {_ in self.getRandomNumber()})
+        let retryAlert = UIAlertAction(
+            title: "再挑戦",
+            style: .default,
+            handler: {_ in self.getRandomNumber()}
+        )
         alert.addAction(retryAlert)
         present(alert, animated: true, completion: nil)
     }
