@@ -8,39 +8,48 @@
 import UIKit
 
 class ViewController: UIViewController {
-    // 乱数表示ラベル
     @IBOutlet private weak var randomNumberLabel: UILabel!
+
+    @IBOutlet private weak var minLabel: UILabel!
+    @IBOutlet private weak var maxLabel: UILabel!
+
     // 乱数の変数（ラベルをデータの置き場にしない）
     private var randomNumber: Int = 0
-    // スライダー
+
     @IBOutlet private weak var numberSlider: UISlider!
+
+    private static let valueRange = 1...100
 
     // 画面が開いたときも乱数を発生させる
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.getRandomNumber()
+
+        numberSlider.minimumValue = Float(Self.valueRange.lowerBound)
+        numberSlider.maximumValue = Float(Self.valueRange.upperBound)
+
+        minLabel.text = String(Self.valueRange.lowerBound)
+        maxLabel.text = String(Self.valueRange.upperBound)
+
+        resetGame()
     }
 
-    // 判定！ボタン
     @IBAction func judgeButton(_ sender: Any) {
 
         // スライダーの値を取得
-        let valueSlider = Int(self.numberSlider.value)
+        let valueSlider = Int(numberSlider.value)
 
         // スライダーとラベルの値を比較し、アラートに送る。
-        if valueSlider == self.randomNumber {
-            self.showAlert(result: "あたり！", value: valueSlider)
-            return
+        if valueSlider == randomNumber {
+            showAlert(result: "あたり！", value: valueSlider)
         } else {
-            self.showAlert(result: "はずれ！", value: valueSlider)
-            return
+            showAlert(result: "はずれ！", value: valueSlider)
         }
     }
 
-    // アラートを表示させるメソッド
     private func showAlert(result: String, value: Int) {
 
-        let message = result + "\nあなたの値： \(value)"
+        let message = "\(result)\nあなたの値： \(value)"
+
         let alert = UIAlertController(
             title: "結果",
             message: message,
@@ -51,15 +60,15 @@ class ViewController: UIViewController {
         let retryAlert = UIAlertAction(
             title: "再挑戦",
             style: .default,
-            handler: {_ in self.getRandomNumber()}
+            handler: { [weak self] _ in self?.resetGame() }
         )
         alert.addAction(retryAlert)
         present(alert, animated: true, completion: nil)
     }
 
     // 乱数を発生させ、ラベルに表示させるメソッド
-    private func getRandomNumber() {
-        self.randomNumber = Int(arc4random_uniform(100))
-        self.randomNumberLabel.text = String(self.randomNumber)
+    private func resetGame() {
+        randomNumber = Int.random(in: Self.valueRange)
+        randomNumberLabel.text = String(randomNumber)
     }
 }
